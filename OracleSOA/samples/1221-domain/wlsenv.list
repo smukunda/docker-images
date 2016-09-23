@@ -1,0 +1,6 @@
+CONNECTION_STRING=dbhost:dbport#:SID
+RCUPREFIX=SOAPREFIX
+DB_PASSWORD=dbpass
+ADMIN_PASSWORD=adminpass
+hostname=hostname
+vol_name=volumename
