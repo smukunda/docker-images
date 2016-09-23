@@ -9,6 +9,7 @@
 #
 # The script takes a file name as input, writes the container id of exited
 # containers in this file and deletes them one by one.
+#
 #*************************************************************************
 
 export file=$1
