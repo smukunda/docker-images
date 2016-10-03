@@ -15,6 +15,8 @@ Before you can build SOA image, you must download the Oracle Server JRE binary a
         $ cd OracleJDK/java-8
         $ sh build.sh
 
+**NOTE:** The files to build JDK image can be found under [docker/OracleJDK](https://github.com/oracle/docker-images/tree/master/OracleJDK)
+
 ### Building WebLogic Infrastructure Docker Install Image
 Before you can build SOA image, you must build WebLogic Infrastructure image as well.
  
