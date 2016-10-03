@@ -5,7 +5,7 @@
 # Copyright (c) 2016-2017 Oracle and/or its affiliates. All rights reserved.
 #
 #*************************************************************************
-# script is used to start a WebLogic server.
+# script is used to start a WebLogic Admin server.
 #*************************************************************************
 
 export vol_name=$1
