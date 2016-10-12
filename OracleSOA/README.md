@@ -4,6 +4,9 @@ Sample Docker configurations to facilitate installation, configuration, and envi
 
 The certification of SOA on Docker does not require the use of any file presented in this repository. Customers and users are welcome to use them as starters, and customize/tweak, or create from scratch new scripts and Dockerfiles.
 
+## Pre-Requisite
+You need to have a running database on any machine. The database connection details are required for creating SOA specific RCU schemas while configuring SOA domain. 
+
 ## How to build and run
 This project offers sample Dockerfiles for SOA 12cR2 (12.2.1). To assist in building the images, you can use the [buildDockerImage.sh](dockerfiles/buildDockerImage.sh) script. See below for instructions and usage.
 

@@ -76,6 +76,9 @@ EXPOSE $SOA_SSL_PORT $SOA_PORT $ADMIN_PORT
 USER oracle
 RUN mkdir /u01/oracle/container-scripts/ /u01/oracle/logs
 COPY container-scripts/* /u01/oracle/container-scripts/
+USER root
+RUN chmod a+xr /u01/oracle/container-scripts/*.*
+USER oracle
 WORKDIR $ORACLE_HOME/container-scripts
 #
 # Define default command to start bash.

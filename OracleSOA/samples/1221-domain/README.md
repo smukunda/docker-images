@@ -2,6 +2,9 @@ Example of Image with SOA Domain
 ================================
 This Dockerfile extends the Oracle SOA 12.2.1 install image and creates a dummy SOA install image with scripts to create and configure SOA domain.
 
+## Pre-Requisite
+You need to have a running database on any machine. The database connection details are required for creating SOA specific RCU schemas while configuring SOA domain.
+
 # How to build image and run container
 First make sure you have built **oracle/soa:12.2.1** by running following command as root user
 
