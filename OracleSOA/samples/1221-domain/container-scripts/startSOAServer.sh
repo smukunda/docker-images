@@ -13,6 +13,7 @@
 #                 vol_name=<volumename>
 #                 hostname=<hostname>
 #                 adminport=<port number where Admin Server is running>
+#                 server=<name of managed server to be started>
 #
 # vol_name - Name of the volume that is created earlier.
 # hostname - Name of the host where all the docker activities are happening.
@@ -23,8 +24,9 @@
 export vol_name=$vol_name
 export hostname=$hostname
 export adminport=$adminport
+export server=$server
 # Start SOA server
-/$vol_name/oracle/user_projects/domains/base_domain/bin/startManagedWebLogic.sh "soa_server1" "http://"$hostname:$adminport > /$vol_name/oracle/logs/startManagedWebLogic$$.log 2>&1 &
+/$vol_name/oracle/user_projects/domains/base_domain/bin/startManagedWebLogic.sh $server "http://"$hostname:$adminport > /$vol_name/oracle/logs/startManagedWebLogic$$.log 2>&1 &
 statusfile=/tmp/notifyfifo.$$
 mkfifo "${statusfile}" || exit 1
 {

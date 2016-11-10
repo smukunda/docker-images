@@ -21,7 +21,7 @@ admin_pass   = os.environ.get("ADMIN_PASSWORD", "welcome1")
 soa_port = int(os.environ.get("SOA_PORT", "8001"))
 soa_pass = os.environ.get("ADMIN_PASSWORD", "welcome1")
 soassl_port = int(os.environ.get("SOA_SSL_PORT", "8002"))
-#domain_path  = '/u01/oracle/user_projects/domains/' + domain_name
+cluster_name  = os.environ.get("CLUSTER_NAME", "docker_cluster")
 #
 # Reading db details and schema prefix passed from parent script
 # ==============================================================
@@ -30,6 +30,8 @@ prefix = sys.argv[2]
 admin_pass=sys.argv[3]
 soa_pass=sys.argv[3]
 vol_name=sys.argv[4]
+admin_host=sys.argv[5]
+soa_host=sys.argv[6]
 #
 # Setting domain path
 # ===================
@@ -53,7 +55,7 @@ readTemplate(template)
 # Configure the Administration Server and SSL port.
 # =========================================================
 cd('Servers/AdminServer')
-set('ListenAddress', '')
+set('ListenAddress', admin_host)
 set('ListenPort', admin_port)
 #
 # Define the user password for weblogic
@@ -76,6 +78,14 @@ set('ListenPort',5556)
 set('NativeVersionEnabled', 'false')
 set('StartScriptEnabled', 'false')
 set('SecureListener', 'false')
+#
+# Define a WebLogic Cluster
+# =========================
+cd('/')
+create(cluster_name, 'Cluster')
+cd('/Clusters/%s' % cluster_name)
+cmo.setClusterMessagingMode('unicast')
+#
 writeDomain(domain_path)
 closeTemplate()
 readDomain(domain_path)
@@ -85,6 +95,7 @@ readDomain(domain_path)
 selectTemplate('Oracle SOA Suite')
 loadTemplates()
 showTemplates()
+#
 #
 # Setting OPSS schema properties
 # ==============================
@@ -126,7 +137,7 @@ cmo.setEnabled(true)
 cmo.setListenPort(soassl_port)
 cd('/')
 cd('/Server/soa_server1')
-cmo.setListenAddress('')
+cmo.setListenAddress(soa_host)
 cd('/JdbcSystemResource/mds-owsm/JdbcResource/mds-owsm/JdbcDriverParams/NO_NAME')
 cmo.setUrl(jdbc_url)
 cmo.setDriverName('oracle.jdbc.OracleDriver')
@@ -174,6 +185,11 @@ cmo.setDriverName('oracle.jdbc.OracleDriver')
 set('PasswordEncrypted', admin_pass)
 cd('Properties/NO_NAME/Property/user')
 cmo.setValue(schema_SOAINFRA)
+#
+# Adding SOA Server to cluster
+# ============================
+cd('/')
+assign("Server", "soa_server1", "Cluster", "docker_cluster")
 #
 # Creating domain
 # ==============================

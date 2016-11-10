@@ -85,8 +85,9 @@ COPY $FMW_PKG install.file oraInst.loc /u01/
 RUN yum install -y \
         unzip tar nfs-utils binutils compat-libcap1 compat-libstdc++ \
         gcc gcc-c++ glibc glibc-devel libaio libaio-devel libgcc \
-        libstdc++ libstdc++-devel ksh make ocfs2-tools sysstat && \
+        libstdc++ libstdc++-devel ksh make ocfs2-tools sysstat iputils sudo && \
         chmod a+xr /u01 && \
+        chmod a+s `which ping` && \
         cd /u01 && $JAVA_HOME/bin/jar xf /u01/$FMW_PKG && cd - && \
         su -c "$JAVA_HOME/bin/java -jar /u01/$FMW_JAR -silent -responseFile /u01/install.file -invPtrLoc /u01/oraInst.loc -jreLoc $JAVA_HOME -ignoreSysPrereqs -force -novalidation ORACLE_HOME=$ORACLE_HOME INSTALL_TYPE=\"SOA Suite\"" - oracle && \
        chown oracle:oracle -R /u01 && \

@@ -23,7 +23,7 @@ The above "docker build" command will create a dummy SOA install image from "ora
 Run the below command to create a docker volume
 
        $ docker volume create --name <volumename>
-       Eg: $ docker volume create --name soavolume
+       Eg: $ docker volume create --name soavolume1
        
 This volume will be created in "/var/lib/docker" directory or the location where "/var/lib/docker" points to.
 
@@ -39,7 +39,7 @@ Create a container to mount the above volume. In the same container execute scri
 These are achieved by executing the below docker run
 
        $ docker run -it -v <volumename>:/<mount point name> --name <containername> oracle/soa-domain:12.2.1 volumeScripts.sh <volumename> 
-       Eg: $ docker run -it -v soavolume:/soavolume --name volcontainer oracle/soa-domain:12.2.1 volumeScripts.sh soavolume
+       Eg: $ docker run -it -v soavolume1:/soavolume1 --name volcontainer1 oracle/soa-domain:12.2.1 volumeScripts.sh soavolume1
 
 Create an environment file **wlsenv.list** under the folder **samples/1221-domain** with the below details:
 
@@ -49,6 +49,8 @@ Create an environment file **wlsenv.list** under the folder **samples/1221-domai
         ADMIN_PASSWORD=<admin_password>
         hostname=<hostname>
         vol_name=<volumename>
+        admin_host=<host name for admin container>
+        soa_host=<host name for soa container>
 
  - CONNECTION_STRING - Connection details to your database should be specified in wlsenv.list. For example, in case of Oracle DB, connection string will be of the format dbhost:dbport:dbsid. This db should be up and running.
 
@@ -61,20 +63,24 @@ Create an environment file **wlsenv.list** under the folder **samples/1221-domai
  - hostname - Name of the host where all the docker activities are happening.
 
  - vol_name - Name of the volume that is created earlier.
+ 
+ - admin_host - Hostname of the container where Admin Server is running
+ 
+ - soa_host - Hostname of the container where SOA Server is running
 
 To start a docker container with a SOA server you can simply call **docker run -d oracle/soa-domain:12.2.1** command along with a call to the script to start SOA Server. You will also need to pass **soaenv.list** file as **--env-file** and mention the **docker volume** to be used. 
 
 A sample docker run command is given below:
 
-         $ docker run -i -t  -p 7001:7001 -v soavolume:/soavolume --name wlscontainer --env-file ./wlsenv.list oracle/soa-domain:12.2.1 configureSOAdomain.sh
+         $ docker run -i -t -p 7001:7001 -v soavolume1:/soavolume1 --name admincont1 --hostname admincont1 --add-host soacont1:172.17.0.3 --env-file ./wlsenv.list oracle/soa-domain:12.2.1 configureSOAdomain.sh
 
 The options "-i -t" in the above command runs the container in interactive mode and you will be able to see the commands running in the container. This includes the command for RCU creation, domain creation and configuration followed by starting the Admin Server.
 
 **IMPORTANT:** You need to wait till all the above commands are run before you can access the AdminServer Web Console.
 
- * "volcontainer" is the docker volume that the container uses.
+ * "soavolume1" is the docker volume that the container uses.
 
- * "wlscontainer" is the name of the container that is created as a result of the above docker run command.
+ * "admincont1" is the name and hostname of the container that is created as a result of the above docker run command.
 
  * "oracle/soa-domain:12.2.1" is the domain image which has the scripts to create and configure SOA domain
 
@@ -98,26 +104,29 @@ Create an environment file **soaenv.list** under the folder **samples/1221-domai
         vol_name=<volumename>
         hostname=<hostname>
         adminport=<port number where Admin Server is running>
+        server=<name of managed server to be started>
 
  - vol_name - Name of the volume that is created earlier.
  
  - hostname - Name of the host where all the docker activities are happening.
   
  - adminport - Port number where admin server is running.
+ 
+ - server -  Name of the Managed Server to be started.
 
 To start a docker container with a SOA domain and the WebLogic AdminServer you can simply call **docker run -d oracle/soa-domain:12.2.1** command along with a call to the script to create and configure SOA domain. You will also need need to pass the above **wlsenv.list** file as **--env-file** and **docker volume** to be used.
 
 A sample docker run command is given below:
 
-         $  docker run -i -t  -p 8001:8001 -v soavolume:/soavolume --name soacontainer  --env-file ./soaenv.list oracle/soa-domain:12.2.1 startSOAServer.sh
+        $ docker run -i -t -p 8001:8001 -v soavolume1:/soavolume1 --name soacont1 --hostname soacont1 --link admincont1:admincont1 --env-file ./soaenv.list oracle/soa-domain:12.2.1 startSOAServer.sh
 
 The options "-i -t" in the above command runs the container in interactive mode and you will be able to see the commands running in the container. This includes the command to start the SOA Server followed by tailing of logs to keep the container up and running.
 
 **IMPORTANT:** You need to wait till all the above commands are run before you can access the SOA-Infra URL.
 
- * "volcontainer" is the docker volume that the container uses.
+* "soavolume1" is the docker volume that the container uses.
 
- * "soacontainer" is the name of the container that is created as a result of the above docker run command.
+ * "soacont1" is the name and hostname of the container that is created as a result of the above docker run command.
 
  * "oracle/soa-domain:12.2.1" is the domain image which has the scripts to start SOA Server.
 

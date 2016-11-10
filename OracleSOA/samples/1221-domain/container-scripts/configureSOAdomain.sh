@@ -17,6 +17,8 @@
 #         ADMIN_PASSWORD=<admin_password>
 #         hostname=<hostname>
 #         vol_name=<volumename>
+#         admin_host=<host name for admin container>
+#         soa_host=<host name for soa container>
 #
 # CONNECTION_STRING - Connection details to your database should be specified in wlsenv.list. For example, in case of Oracle DB, connection string will be of the format dbhost:dbport:dbsid. This db should be up and running.
 #
@@ -30,6 +32,10 @@
 #
 # vol_name - Name of the volume that is created earlier.
 #
+# admin_host - Host name of the container where the Admin Server is running.
+#
+# soa_host - Host name of the container where the SOA Server is running.
+#
 #********************************************************************************************
 echo "CONNECTION_STRING=${CONNECTION_STRING:?"Please set CONNECTION_STRING"}"
 echo "RCUPREFIX=${RCUPREFIX:?"Please set RCUPREFIX"}"
@@ -41,6 +47,8 @@ export ADMIN_PASSWORD=$ADMIN_PASSWORD
 export DB_PASSWORD=$DB_PASSWORD
 export jdbc_url="jdbc:oracle:thin:@"$CONNECTION_STRING
 export vol_name=$vol_name
+export admin_host=$admin_host
+export soa_host=$soa_host
 echo -e $DB_PASSWORD"\n"$ADMIN_PASSWORD > /$vol_name/oracle/pwd.txt
 #
 # Creating schemas needed for sample domain ####
@@ -50,7 +58,7 @@ echo -e $DB_PASSWORD"\n"$ADMIN_PASSWORD > /$vol_name/oracle/pwd.txt
 #
 # Configuration of SOA domain
 #=============================
-/$vol_name/oracle/oracle_common/common/bin/wlst.sh -skipWLSModuleScanning /$vol_name/oracle/container-scripts/create_domain.py $jdbc_url $RCUPREFIX $ADMIN_PASSWORD $vol_name
+/$vol_name/oracle/oracle_common/common/bin/wlst.sh -skipWLSModuleScanning /$vol_name/oracle/container-scripts/create_domain.py $jdbc_url $RCUPREFIX $ADMIN_PASSWORD $vol_name $admin_host $soa_host
 #
 # Creating domain env file
 #=========================
