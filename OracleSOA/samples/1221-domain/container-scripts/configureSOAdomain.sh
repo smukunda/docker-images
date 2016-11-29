@@ -15,10 +15,7 @@
 #         RCUPREFIX=<RCU_Prefix>
 #         DB_PASSWORD=<database_password>
 #         ADMIN_PASSWORD=<admin_password>
-#         hostname=<hostname>
 #         vol_name=<volumename>
-#         admin_host=<host name for admin container>
-#         soa_host=<host name for soa container>
 #
 # CONNECTION_STRING - Connection details to your database should be specified in wlsenv.list. For example, in case of Oracle DB, connection string will be of the format dbhost:dbport:dbsid. This db should be up and running.
 #
@@ -28,13 +25,8 @@
 #
 # ADMIN_PASSWORD - Password for the Admin Server and SOA Server.
 #
-# hostname - Name of the host where all the docker activities are happening.
-#
 # vol_name - Name of the volume that is created earlier.
 #
-# admin_host - Host name of the container where the Admin Server is running.
-#
-# soa_host - Host name of the container where the SOA Server is running.
 #
 #********************************************************************************************
 echo "CONNECTION_STRING=${CONNECTION_STRING:?"Please set CONNECTION_STRING"}"
@@ -47,8 +39,6 @@ export ADMIN_PASSWORD=$ADMIN_PASSWORD
 export DB_PASSWORD=$DB_PASSWORD
 export jdbc_url="jdbc:oracle:thin:@"$CONNECTION_STRING
 export vol_name=$vol_name
-export admin_host=$admin_host
-export soa_host=$soa_host
 echo -e $DB_PASSWORD"\n"$ADMIN_PASSWORD > /$vol_name/oracle/pwd.txt
 #
 # Creating schemas needed for sample domain ####
@@ -56,9 +46,14 @@ echo -e $DB_PASSWORD"\n"$ADMIN_PASSWORD > /$vol_name/oracle/pwd.txt
 #
 /$vol_name/oracle/oracle_common/bin/rcu -silent -createRepository -databaseType ORACLE -connectString $CONNECTION_STRING -dbUser sys -dbRole sysdba -useSamePasswordForAllSchemaUsers true -selectDependentsForComponents true -variables SOA_PROFILE_TYPE=SMALL,HEALTHCARE_INTEGRATION=NO -schemaPrefix $RCUPREFIX -component OPSS -component STB -component SOAINFRA -f < /$vol_name/oracle/pwd.txt
 #
+# Get Host Name
+#==============
+#
+export admin_host=`hostname -I`
+#
 # Configuration of SOA domain
 #=============================
-/$vol_name/oracle/oracle_common/common/bin/wlst.sh -skipWLSModuleScanning /$vol_name/oracle/container-scripts/create_domain.py $jdbc_url $RCUPREFIX $ADMIN_PASSWORD $vol_name $admin_host $soa_host
+/$vol_name/oracle/oracle_common/common/bin/wlst.sh -skipWLSModuleScanning /$vol_name/oracle/container-scripts/create_domain.py $jdbc_url $RCUPREFIX $ADMIN_PASSWORD $vol_name $admin_host
 #
 # Creating domain env file
 #=========================
@@ -81,6 +76,6 @@ echo "password="$ADMIN_PASSWORD >> /$vol_name/oracle/user_projects/domains/base_
 echo ". /$vol_name/oracle/user_projects/domains/base_domain/bin/setDomainEnv.sh" >> /$vol_name/oracle/.bashrc
 echo "export PATH=$PATH:/$vol_name/oracle/common/bin:/$vol_name/oracle/user_projects/domains/base_domain/bin" >> /$vol_name/oracle/.bashrc
 #
-# Starting WebLogic Server
+# Keeping the container up
 #=========================
-/$vol_name/oracle/container-scripts/startAdmin.sh $vol_name
+/$vol_name/oracle/container-scripts/keepContUp.sh $vol_name

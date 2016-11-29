@@ -1,3 +1,4 @@
-vol_name=volumename
-hostname=hostname
-adminport=adminport
+vol_name=<volumename>
+hostname=<hostname>
+adminport=<adminport>
+server=<servername>

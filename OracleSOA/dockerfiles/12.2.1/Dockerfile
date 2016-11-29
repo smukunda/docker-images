@@ -96,5 +96,4 @@ RUN yum install -y \
 #
 #
 # Define default command to start bash.
-#CMD ["/u01/oracle/user_projects/domains/base_domain/bin/startWebLogic.sh"]
 CMD ["bash"]

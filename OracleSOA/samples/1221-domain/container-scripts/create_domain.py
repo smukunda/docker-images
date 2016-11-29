@@ -31,7 +31,6 @@ admin_pass=sys.argv[3]
 soa_pass=sys.argv[3]
 vol_name=sys.argv[4]
 admin_host=sys.argv[5]
-soa_host=sys.argv[6]
 #
 # Setting domain path
 # ===================
@@ -118,6 +117,7 @@ set('PasswordEncrypted', admin_pass)
 cd('Properties/NO_NAME/Property/user')
 cmo.setValue(schema_OPSS)
 #
+#
 # Setting STB schema properties
 # ==============================
 cd('/JdbcSystemResource/LocalSvcTblDataSource/JdbcResource/LocalSvcTblDataSource/JdbcDriverParams/NO_NAME')
@@ -131,13 +131,11 @@ cmo.setValue(schema_STB)
 # ==============================
 cd('/Server/soa_server1')
 cmo.setListenPort(soa_port)
+set('ListenAddress','')
 create('soa_server1','SSL')
 cd('SSL/soa_server1')
 cmo.setEnabled(true)
 cmo.setListenPort(soassl_port)
-cd('/')
-cd('/Server/soa_server1')
-cmo.setListenAddress(soa_host)
 cd('/JdbcSystemResource/mds-owsm/JdbcResource/mds-owsm/JdbcDriverParams/NO_NAME')
 cmo.setUrl(jdbc_url)
 cmo.setDriverName('oracle.jdbc.OracleDriver')

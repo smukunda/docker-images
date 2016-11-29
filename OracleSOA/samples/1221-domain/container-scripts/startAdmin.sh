@@ -8,7 +8,7 @@
 # script is used to start a WebLogic Admin server.
 #*************************************************************************
 
-export vol_name=$1
+export vol_name=$vol_name
 # Start Admin server
 /$vol_name/oracle/user_projects/domains/base_domain/bin/startWebLogic.sh > /$vol_name/oracle/logs/startWebLogic$$.log 2>&1 &
 statusfile=/tmp/notifyfifo.$$
